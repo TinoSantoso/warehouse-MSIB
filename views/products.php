@@ -31,61 +31,65 @@
     ?>
 
     <!-- Form to Add Product -->
-    <form action="products.php" method="POST" class="mb-4 mt-2">
+    <form action="products.php" method="POST" class="mb-4 mt-2" enctype="multipart/form-data">
         <input type="hidden" name="id" value="<?php echo $productId; ?>">
         <div class="form-group">
             <label for="name">Product Name</label>
             <input type="text" class="form-control" id="name" name="name" value="<?php echo $name; ?>" required>
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Categories Dropdown -->
+                <div class="form-group">
+                    <label for="category_id">Category</label>
+                    <select class="form-control" id="category_id" name="category_id" required>
+                        <?php
+                        require_once '../controllers/CategoryController.php';
+                        $categoryController = new CategoryController();
+                        $categories = $categoryController->getAllCategories();
         
-        <!-- Categories Dropdown -->
-        <div class="form-group">
-            <label for="category_id">Category</label>
-            <select class="form-control" id="category_id" name="category_id" required>
-                <?php
-                require_once '../controllers/CategoryController.php';
-                $categoryController = new CategoryController();
-                $categories = $categoryController->getAllCategories();
-
-                if ($categories->rowCount() > 0) {
-                    echo "<option value=''>Choose a category</option>";
-                    // Loop through and display categories
-                    while ($row = $categories->fetch(PDO::FETCH_ASSOC)) {
-                        $category_name = ucfirst($row['name']);
-                        $attribute = ($row['id'] == $category_id) ? 'selected' : '';
-                        echo "<option value='{$row['id']}' {$attribute}>{$category_name}</option>";
-                    }
-                } else {
-                    // No categories available
-                    echo "<option disabled>No categories available</option>";
-                }
-                ?>
-            </select>
-        </div>
-
-        <!-- Warehouses Dropdown -->
-        <div class="form-group">
-            <label for="warehouse_id">Warehouse</label>
-            <select class="form-control" id="warehouse_id" name="warehouse_id" required>
-                <?php
-                require_once '../controllers/WarehouseController.php';
-                $warehouseController = new WarehouseController();
-                $warehouses = $warehouseController->getAllWarehouses();
-
-                if ($warehouses->rowCount() > 0) {
-                    echo "<option value=''>Choose a warehouse</option>";
-                    // Loop through and display warehouses
-                    while ($row = $warehouses->fetch(PDO::FETCH_ASSOC)) {
-                        $warehouse_name = ucfirst($row['name']);
-                        $attribute = ($row['id'] == $warehouse_id) ? 'selected' : '';
-                        echo "<option value='{$row['id']}' {$attribute}>{$warehouse_name}</option>";
-                    }
-                } else {
-                    // No warehouses available
-                    echo "<option disabled>No warehouses available</option>";
-                }
-                ?>
-            </select>
+                        if ($categories->rowCount() > 0) {
+                            echo "<option value=''>Choose a category</option>";
+                            // Loop through and display categories
+                            while ($row = $categories->fetch(PDO::FETCH_ASSOC)) {
+                                $category_name = ucfirst($row['name']);
+                                $attribute = ($row['id'] == $category_id) ? 'selected' : '';
+                                echo "<option value='{$row['id']}' {$attribute}>{$category_name}</option>";
+                            }
+                        } else {
+                            // No categories available
+                            echo "<option disabled>No categories available</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <!-- Warehouses Dropdown -->
+                <div class="form-group">
+                    <label for="warehouse_id">Warehouse</label>
+                    <select class="form-control" id="warehouse_id" name="warehouse_id" required>
+                        <?php
+                        require_once '../controllers/WarehouseController.php';
+                        $warehouseController = new WarehouseController();
+                        $warehouses = $warehouseController->getAllWarehouses();
+        
+                        if ($warehouses->rowCount() > 0) {
+                            echo "<option value=''>Choose a warehouse</option>";
+                            // Loop through and display warehouses
+                            while ($row = $warehouses->fetch(PDO::FETCH_ASSOC)) {
+                                $warehouse_name = ucfirst($row['name']);
+                                $attribute = ($row['id'] == $warehouse_id) ? 'selected' : '';
+                                echo "<option value='{$row['id']}' {$attribute}>{$warehouse_name}</option>";
+                            }
+                        } else {
+                            // No warehouses available
+                            echo "<option disabled>No warehouses available</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+            </div>
         </div>
 
         <div class="row">
@@ -107,6 +111,10 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="form-group">
+            <label for="product_images">Product Images</label>
+            <input type="file" name="product_images[]" id="product_images" multiple class="form-control" accept="image/*">
         </div>
         <button type="submit" class="btn btn-primary mt-3 w-25">
             <?= $editMode ? 'Update Product' : 'Add Product'; ?>

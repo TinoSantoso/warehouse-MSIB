@@ -84,5 +84,13 @@ class Product {
         }
         return false;
     }
+
+    public function getProductImages($product_id) {
+        $query = "SELECT * FROM product_images WHERE product_id = :product_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':product_id', $product_id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 ?>
